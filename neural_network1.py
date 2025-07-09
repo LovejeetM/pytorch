@@ -1,4 +1,5 @@
 import numpy as np
+from random import seed
 
 # 6 weights
 # 3 biases
@@ -96,4 +97,26 @@ def initialize_network(num_inputs, num_hidden_layers, num_nodes_hidden, num_node
     
     return network
 
-print(initialize_network(5, 3, [3, 2, 3], 1))
+s = initialize_network(5, 3, [3, 2, 3], 1)
+print(s)
+
+def compute_weighted_sum(inputs, weights, biases):
+    return np.sum(inputs * weights) + biases
+
+np.random.seed(12)
+input1 = np.around(np.random.uniform(size=5), decimals=2)
+
+print('The inputs to the network are {}'.format(input1))
+
+print(s['layer_1']['node_1']['weights'])
+print(s['layer_1']['node_1']['bias'][0])
+
+print(compute_weighted_sum(input1, s['layer_1']['node_1']['weights'], s['layer_1']['node_1']['bias'][0]))
+a = compute_weighted_sum(input1, s['layer_1']['node_1']['weights'], s['layer_1']['node_1']['bias'][0])
+
+def node_activation(weighted_sum):
+    return (1.0 / (1.0 + np.exp(-1 * weighted_sum)))
+
+ws = node_activation(a)
+print("Node activation  = {}".format(np.around(ws[0], decimals = 4)))
+
