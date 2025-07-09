@@ -118,7 +118,7 @@ def node_activation(weighted_sum):
     return (1.0 / (1.0 + np.exp(-1 * weighted_sum)))
 
 ws = node_activation(a)
-print("Node activation  = {}".format(np.around(ws[0], decimals = 4)))
+print("Node activation  = {}".format(np.around(ws, decimals = 4)))
 
 def forward_propagate(network, inputs):
     layer_inputs = list(inputs)
@@ -134,9 +134,11 @@ def forward_propagate(network, inputs):
             layer_outputs.append(np.around(node_output[0], decimals= 4))
 
         if layer != "output":
-            print('The outputs of the nodes in hidden layer number {} is {}'.format(layer.split('_')[1], layer_outputs))
+            print(f"The outputs of the nodes in hidden layer number {layer_outputs}")
 
         layer_inputs = layer_outputs
 
     network_predictions = layer_outputs
     return network_predictions
+
+print(forward_propagate(s, input1))
