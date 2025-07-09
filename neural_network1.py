@@ -33,7 +33,7 @@ a_12 = 1.0 / (1.0 + np.exp(-z_12))
 print('The activation of the second node in the hidden layer is {}'.format(np.around(a_12, decimals=4)))
 
 
-# now for the output taking these activations as the input to the output layer
+# now for the num_nodes_output taking these activations as the input to the output layer
 z_2 = a_11 * weights[4] + a_12 * weights[5] + biases[2]
 print("weighted sum of the neural network is = {}".format(np.around(z_2, decimals= 2)))
 
@@ -46,26 +46,26 @@ print("output of the neural network is = {}".format(np.around(z_2, decimals= 4))
 
 # lets start building this neural network by taking 2 hidden layers:
 n = 2
-hidden_layers = 2
+num_hidden_layers = 2
 m = [2,2]  # number of nodes in each layer
-output = 1  # number of output nodes
+num_nodes_output = 1  # number of output nodes
 
-previous = n # nodes in the previous layer
+previous = n # nodes in the num_nodes_previousprevious layer
 network = {}
 
 # looping over the layer and randomly initializing the weights and biases
-for layer in range(hidden_layers + 1):
-    if layer == hidden_layers:
-        name = "output layer"
-        num_nodes = output
+for layer in range(num_hidden_layers + 1):
+    if layer == num_hidden_layers:
+        layer_name = "output layer"
+        num_nodes = num_nodes_output
     else:
-        name = "layer_{}".format(layer +1)
+        layer_name = "layer_{}".format(layer +1)
         num_nodes = m[layer]
 
-    network[name] = {}
+    network[layer_name] = {}
     for node in range(num_nodes):
         node_name = "node_{}".format(node +1)
-        network[name][node_name] = {
+        network[layer_name][node_name] = {
             'weights': np.around(np.random.uniform(size=previous), decimals=2),
             'bias': np.around(np.random.uniform(size=1), decimals=2),
         }
@@ -73,3 +73,27 @@ for layer in range(hidden_layers + 1):
     
 print(network)
 
+# Creating a function to call this to initialize the network
+def initialize_network(num_inputs, num_hidden_layers, num_nodes_hidden, num_nodes_output):
+    num_nodes_previous = num_inputs
+    network = {}
+    for layer in range(num_hidden_layers + 1):
+        if layer == num_hidden_layers:
+            layer_name = "output layer"
+            num_nodes = num_nodes_output
+        else:
+            layer_name = "layer_{}".format(layer +1)
+            num_nodes = num_nodes_hidden[layer]
+
+        network[layer_name] = {}
+        for node in range(num_nodes):
+            node_name = "node_{}".format(node +1)
+            network[layer_name][node_name] = {
+                'weights': np.around(np.random.uniform(size=num_nodes_previous), decimals=2),
+                'bias': np.around(np.random.uniform(size=1), decimals=2),
+            }
+        num_nodes_previous = num_nodes
+    
+    return network
+
+print(initialize_network(5, 3, [3, 2, 3], 1))
