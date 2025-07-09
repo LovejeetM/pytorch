@@ -120,3 +120,23 @@ def node_activation(weighted_sum):
 ws = node_activation(a)
 print("Node activation  = {}".format(np.around(ws[0], decimals = 4)))
 
+def forward_propagate(network, inputs):
+    layer_inputs = list(inputs)
+
+    for layer in network:
+        layer_data = network[layer]
+        layer_outputs = []
+
+        for layer_node in layer_data:
+            node_data = layer_data[layer_node]
+
+            node_output = node_activation(compute_weighted_sum(layer_inputs, node_data['weights'], node_data['bias']))
+            layer_outputs.append(np.around(node_output[0], decimals= 4))
+
+        if layer != "output":
+            print('The outputs of the nodes in hidden layer number {} is {}'.format(layer.split('_')[1], layer_outputs))
+
+        layer_inputs = layer_outputs
+
+    network_predictions = layer_outputs
+    return network_predictions
