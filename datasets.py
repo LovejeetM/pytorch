@@ -1,6 +1,13 @@
 import torch
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
+import matplotlib.pylab as plt
+from matplotlib.pyplot import imshow
+import numpy as np
+from PIL import Image
+import pandas as pd
+import os
+
 torch.manual_seed(1)
 
 
@@ -91,3 +98,89 @@ for i in range(3):
     print('Index: ', i, 'Transformed x_:', x_, 'Transformed y_:', y_)
     x_co, y_co = compose_data_set[i]
     print('Index: ', i, 'Compose Transformed x_co: ', x_co ,'Compose Transformed y_co: ',y_co)
+
+
+
+
+
+
+# image datasets -------------------------------------------------------------------------------------
+
+torch.manual_seed(0)
+
+directory=""
+csv_file ='index.csv'
+csv_path=os.path.join(directory,csv_file)
+
+data_name = pd.read_csv(csv_path)
+print(data_name.head())
+
+print('File name:', data_name.iloc[0, 1])
+print('y:', data_name.iloc[0, 0])
+print('File name:', data_name.iloc[1, 1])
+print('class or y:', data_name.iloc[1, 0])
+print('The number of rows: ', data_name.shape[0])
+
+image_name =data_name.iloc[1, 1]
+print(image_name)
+
+image_path=os.path.join(directory,image_name)
+print(image_path)
+
+image = Image.open(image_path)
+plt.imshow(image,cmap='gray', vmin=0, vmax=255)
+plt.title(data_name.iloc[1, 0])
+plt.show()
+
+image_name = data_name.iloc[19, 1]
+image_path=os.path.join(directory,image_name)
+image = Image.open(image_path)
+plt.imshow(image,cmap='gray', vmin=0, vmax=255)
+plt.title(data_name.iloc[19, 0])
+plt.show()
+
+class Dataset(Dataset):
+    def __init__(self, csv_file, data_dir, transform=None):
+        self.data_dir=data_dir
+        self.transform = transform
+        data_dircsv_file=os.path.join(self.data_dir,csv_file)
+        self.data_name= pd.read_csv(data_dircsv_file)
+        
+        self.len=self.data_name.shape[0] 
+    
+    def __len__(self):
+        return self.len
+    
+    def __getitem__(self, idx):
+        img_name=os.path.join(self.data_dir,self.data_name.iloc[idx, 1])
+        image = Image.open(img_name)
+        
+        y = self.data_name.iloc[idx, 0]
+        
+        if self.transform:
+            image = self.transform(image)
+
+        return image, y
+    
+dataset = Dataset(csv_file=csv_file, data_dir=directory)
+
+image=dataset[0][0]
+y=dataset[0][1]
+
+plt.imshow(image,cmap='gray', vmin=0, vmax=255)
+plt.title(y)
+plt.show()
+
+print(y)
+
+image=dataset[9][0]
+y=dataset[9][1]
+
+plt.imshow(image,cmap='gray', vmin=0, vmax=255)
+plt.title(y)
+plt.show()
+
+croptensor_data_transform = transforms.Compose([transforms.CenterCrop(20), transforms.ToTensor()])
+dataset = Dataset(csv_file=csv_file , data_dir=directory,transform=croptensor_data_transform )
+print("The shape of the first element tensor: ", dataset[0][0].shape)
+
