@@ -3,6 +3,8 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 import matplotlib.pylab as plt
 from matplotlib.pyplot import imshow
+import torchvision.transforms as transforms
+import torchvision.datasets as dsets
 import numpy as np
 from PIL import Image
 import pandas as pd
@@ -184,3 +186,42 @@ croptensor_data_transform = transforms.Compose([transforms.CenterCrop(20), trans
 dataset = Dataset(csv_file=csv_file , data_dir=directory,transform=croptensor_data_transform )
 print("The shape of the first element tensor: ", dataset[0][0].shape)
 
+
+
+
+dataset = dsets.MNIST(
+    root = './data',  
+    download = True, 
+    transform = transforms.ToTensor()
+)
+
+
+
+
+print("Type of the first element: ", type(dataset[0]))
+print("The length of the tuple: ", len(dataset[0]))
+print("The shape of the first element in the tuple: ", dataset[0][0].shape)
+print("The type of the first element in the tuple", type(dataset[0][0]))
+print("The second element in the tuple: ", dataset[0][1])
+print("The type of the second element in the tuple: ", type(dataset[0][1]))
+print("As the result, the structure of the first element in the dataset is (tensor([1, 28, 28]), tensor(7)).")
+
+def show_data(data_sample, shape = (28, 28)):
+    plt.imshow(data_sample[0].numpy().reshape(shape), cmap='gray')
+    plt.title('y = ' + str(data_sample[1]))
+
+show_data(dataset[0])
+
+show_data(dataset[1])
+
+croptensor_data_transform = transforms.Compose([transforms.CenterCrop(20), transforms.ToTensor()])
+dataset = dsets.MNIST(root = './data', download = True, transform = croptensor_data_transform)
+print("The shape of the first element in the first tuple: ", dataset[0][0].shape)
+
+show_data(dataset[0],shape = (20, 20))
+
+show_data(dataset[1],shape = (20, 20))
+
+fliptensor_data_transform = transforms.Compose([transforms.RandomHorizontalFlip(p = 1),transforms.ToTensor()])
+dataset = dsets.MNIST(root = './data', download = True, transform = fliptensor_data_transform)
+show_data(dataset[1])
